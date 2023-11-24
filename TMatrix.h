@@ -1,10 +1,11 @@
 #pragma once
 #include "TVector.h"
-#include <cmath>
 #define MyType long long int
 
 class TMatrix
 {
+protected:
+
 	TVector<TVector <MyType>> arr;
 	unsigned int size_lines, size_columns;
 
