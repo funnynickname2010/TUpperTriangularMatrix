@@ -11,8 +11,11 @@ protected:
 
 public:
 
-	explicit TMatrix(int n);
-	TMatrix(int n, int m);
+	explicit TMatrix(const unsigned int n);
+	TMatrix(const unsigned int n, const unsigned int m);
+
+	const unsigned int& GetSizeLines() const;
+	const unsigned int& GetSizeColumns() const;
 	
 	TMatrix operator +(const TMatrix& matrix);
 	TMatrix operator -(const TMatrix& matrix);

@@ -1,6 +1,6 @@
 #include "TMatrix.h"
 
-TMatrix::TMatrix(int n) : arr(n)
+TMatrix::TMatrix(const unsigned int n) : arr(n)
 {
 	for (int i = 0; i < n; i++) 
 	{ 
@@ -16,7 +16,7 @@ TMatrix::TMatrix(int n) : arr(n)
 	size_lines = n;
 }
 
-TMatrix::TMatrix(int n, int m) : arr(n)
+TMatrix::TMatrix(const unsigned int n, const unsigned int m) : arr(n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -30,6 +30,16 @@ TMatrix::TMatrix(int n, int m) : arr(n)
 
 	size_columns = m;
 	size_lines = n;
+}
+
+const unsigned int& TMatrix::GetSizeLines() const
+{
+	return size_lines;
+}
+
+const unsigned int& TMatrix::GetSizeColumns() const
+{
+	return size_columns;
 }
 
 TMatrix TMatrix::operator+(const TMatrix& matrix)
