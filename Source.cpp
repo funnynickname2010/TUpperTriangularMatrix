@@ -15,8 +15,8 @@ int main()
 	int matrix_1_temp_size = 0;
 	int matrix_2_temp_size = 0;
 
-	ExpectedInput(matrix_1_temp_size, "Input matrix_1 number of lines: ");
-	ExpectedInput(matrix_2_temp_size, "Input matrix_2 number of lines: ");
+	ExpectedInput(matrix_1_temp_size, "Input matrix_1 size: ");
+	ExpectedInput(matrix_2_temp_size, "Input matrix_2 size: ");
 
 	std::cin.clear();
 

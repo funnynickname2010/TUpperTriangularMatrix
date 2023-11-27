@@ -188,7 +188,8 @@ std::istream& operator>>(std::istream& os, TUpperTriangularMatrix& matrix)
 			{
 				if (!matrix.IsInTriangle(i, j))
 				{
-					std::cout << matrix.Get(i, j);
+					const TUpperTriangularMatrix temp_matrix(matrix);
+					std::cout <<  matrix.Get(i, j);
 				}
 				else
 				{
@@ -196,11 +197,13 @@ std::istream& operator>>(std::istream& os, TUpperTriangularMatrix& matrix)
 				}
 			}
 
-			std::cout << std::endl;
+			//std::cout << std::endl;
 		}
 	}
-	catch (...)
+	catch (std::exception& e)
 	{
+		std::cout << e.what() << std::endl;
+
 		throw std::exception("TMatrix std::istream& operator>> failure.");
 	}
 
