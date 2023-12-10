@@ -1,107 +1,71 @@
 #include "TMatrix.h"
 
-TMatrix::TMatrix(const unsigned int n) : arr(n)
+TMatrix::TMatrix(const unsigned int n = 1) : TVector<TVector<MyType>>(n)
 {
 	for (int i = 0; i < n; i++) 
 	{ 
-		arr[i].SetSize(n);
+		val[i].SetSize(n);
 
 		for (int j = 0; j < n; j++)
 		{
-			arr[i][j] = 0;
+			val[i][j] = 0;
 		}
 	}
-
-	size_columns = n;
-	size_lines = n;
 }
 
-TMatrix::TMatrix(const unsigned int n, const unsigned int m) : arr(n)
+TMatrix::TMatrix(const unsigned int n, const unsigned int m) : TVector<TVector<MyType>>(n)
 {
 	for (int i = 0; i < n; i++)
 	{
-		arr[i].SetSize(m); 
+		val[i].SetSize(m);
 
 		for (int j = 0; j < m; j++)
 		{
-			arr[i][j] = 0;
+			val[i][j] = 0;
 		}
 	}
-
-	size_columns = m;
-	size_lines = n;
 }
+
+TMatrix::TMatrix(const TVector<TVector<MyType>>& vector) : TVector<TVector<MyType>>(vector.GetSize()) {}
 
 const unsigned int& TMatrix::GetSizeLines() const
 {
-	return size_lines;
+	return size;
 }
 
 const unsigned int& TMatrix::GetSizeColumns() const
 {
-	return size_columns;
+	return val[0].GetSize();
 }
 
 TMatrix TMatrix::operator+(const TMatrix& matrix)
 {
-	TMatrix result(size_lines, size_columns);
-
-	if (size_lines != matrix.size_lines || size_columns != matrix.size_columns)
-	{
-		throw std::exception("TMatrix operator+ failure. Size mismatch");
-	}
-
-	try
-	{
-		result.arr = arr + matrix.arr;
-	}
-	catch (...)
-	{
-		throw std::exception("TMatrix operator+ failure.");
-	}
-
-	return result;
+	return TVector<TVector<MyType>>::operator+(matrix);
 }
 
 TMatrix TMatrix::operator-(const TMatrix& matrix)
 {
-	TMatrix result(size_lines, size_columns);
-
-	if (size_lines != matrix.size_lines || size_columns != matrix.size_columns)
-	{
-		throw std::exception("TMatrix operator- failure. Size mismatch");
-	}
-
-	try
-	{
-		result.arr = arr - matrix.arr;
-	}
-	catch (...)
-	{
-		throw std::exception("TMatrix operator- failure.");
-	}
-
-	return result;
+	return TVector<TVector<MyType>>::operator-(matrix);
 }
 
 TMatrix TMatrix::operator*(TMatrix& matrix)
 {
-	TMatrix result(size_lines, matrix.size_columns);
+	TMatrix result(size, matrix.val[0].GetSize());
 
-	if (size_columns != matrix.size_lines)
+	if (this->GetSizeColumns() != matrix.size)
 	{
 		throw std::exception("TMatrix operator*(const TMatrix& matrix) failure. Size mismatch");
 	}
 
 	try
 	{
-		for (int i = 0; i < result.size_columns; i++)
+		for (int i = 0; i < result.GetSizeColumns(); i++)
 		{
-			for (int j = 0; j < result.size_lines; j++)
+			for (int j = 0; j < result.size; j++)
 			{
-				for (int k = 0; k < size_columns; k++)
+				for (int k = 0; k < this->GetSizeColumns(); k++)
 				{
-					result.arr[i][j] += arr[i][k] * matrix.arr[k][j];
+					result.val[i][j] += val[i][k] * matrix.val[k][j];
 				}
 			}
 		}
@@ -116,105 +80,59 @@ TMatrix TMatrix::operator*(TMatrix& matrix)
 
 TMatrix TMatrix::operator*(const double scalar)
 {
-	TMatrix result(this->size_lines, this->size_columns);
-
-	result.arr = this->arr * scalar;
-
-	return result;
+	return TVector<TVector<MyType>>::operator*(scalar);
 }
 
 TMatrix TMatrix::operator/(const double scalar)
 {
-	TMatrix result(this->size_lines, this->size_columns);
-
-	if (scalar != 0)
-	{
-		result.arr = this->arr / scalar;
-	}
-	else
-	{
-		throw std::exception("TMatrix::operator/ (const double scalar) failure: division by zero.");
-	}
-
-	return result;
+	return TVector<TVector<MyType>>::operator/(scalar);
 }
 
 TMatrix& TMatrix::operator+=(const TMatrix& matrix)
 {
-	*this = *this + matrix;
+	TVector<TVector<MyType>>::operator+=(matrix);
 
-	return (*this);
+	return *this;
 }
 
 TMatrix& TMatrix::operator-=(const TMatrix& matrix)
 {
-	*this = *this - matrix;
+	TVector<TVector<MyType>>::operator-=(matrix);
 
 	return *this;
 }
 
 TVector<MyType>& TMatrix::operator[](int index)
 {
-	return arr[index];
+	return val[index];
 }
 
 TVector<MyType>& TMatrix::operator[](int index) const
 {
-	return arr[index];
+	return val[index];
 }
 
 bool TMatrix::operator==(const TMatrix& matrix) const
 {
-	bool flag = 1;
-
-	if (size_lines != matrix.size_lines || size_columns != matrix.size_columns)
-	{
-		throw std::exception("TMatrix operator== failure. Size mismatch");
-	}
-
-	for (int i = 0; i < size_lines; i++)
-	{
-		if (arr != matrix.arr)
-		{
-			flag = 0;
-			break;
-		}
-	}
-
-	return flag;
+	return TVector<TVector<MyType>>::operator==(matrix);
 }
 
 bool TMatrix::operator!=(const TMatrix& matrix) const
 {
-	bool flag = 1;
-
-	if (size_lines != matrix.size_lines || size_columns != matrix.size_columns)
-	{
-		throw std::exception("TMatrix operator== failure. Size mismatch");
-	}
-
-	for (int i = 0; i < size_lines; i++)
-	{
-		if (arr != matrix.arr)
-		{
-			flag = 0;
-			break;
-		}
-	}
-
-	return !flag;
+	return TVector<TVector<MyType>>::operator!=(matrix);
 }
 
 std::ostream& operator<<(std::ostream& os, const TMatrix& matrix)
 {
-	for (int i = 0; i < matrix.size_lines; i++)
+	for (int i = 0; i < matrix.size; i++)
 	{
 		try
 		{
-			os << matrix.arr[i] << std::endl;
+			os << matrix.val[i] << std::endl;
 		}
-		catch (...)
+		catch (const std::exception& e)
 		{
+			std::cout << e.what();
 			throw std::exception("TMatrix std::ostream& operator<< failure.");
 		}
 	}
@@ -226,13 +144,14 @@ std::istream& operator>>(std::istream& os, TMatrix& matrix)
 {
 	try
 	{
-		for (int i = 0; i < matrix.size_lines && os.good(); i++)
+		for (int i = 0; i < matrix.size && os.good(); i++)
 		{
-			os >> matrix.arr[i];
+			os >> matrix.val[i];
 		}
 	}
-	catch (...)
+	catch (const std::exception& e)
 	{
+		std::cout << e.what();
 		throw std::exception("TMatrix std::istream& operator>> failure.");
 	}
 

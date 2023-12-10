@@ -2,17 +2,13 @@
 #include "TVector.h"
 #define MyType long long int
 
-class TMatrix
+class TMatrix : protected TVector<TVector<MyType>>
 {
-protected:
-
-	TVector<TVector <MyType>> arr;
-	unsigned int size_lines, size_columns;
-
 public:
 
 	explicit TMatrix(const unsigned int n);
 	TMatrix(const unsigned int n, const unsigned int m);
+	TMatrix(const TVector<TVector<MyType>>& vector);
 
 	const unsigned int& GetSizeLines() const;
 	const unsigned int& GetSizeColumns() const;

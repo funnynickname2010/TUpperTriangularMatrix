@@ -1,7 +1,6 @@
 #include "TUpperTriangularMatrix.h"
 #include "TMatrix.cpp"
 
-
 bool TUpperTriangularMatrix::IsInTriangle(int i, int j) const
 {
 	return (j >= i);
@@ -9,33 +8,33 @@ bool TUpperTriangularMatrix::IsInTriangle(int i, int j) const
 
 TUpperTriangularMatrix::TUpperTriangularMatrix(const unsigned int n) : TMatrix(n)
 {
-	for (int i = 1; i < size_lines; i++)
+	for (int i = 1; i < this->size; i++)
 	{
-		arr[i].SetSize(size_lines - i);
+		val[i].SetSize(size - i);
 	}
 }
 
-const MyType TUpperTriangularMatrix::Get(int i, int j) const
+const MyType TUpperTriangularMatrix::operator()(const int i, const int j) const
 {
-	if (!IsInTriangle(i, j))
+	MyType result = 0;
+
+	if (IsInTriangle(i, j))
 	{
-		return 0;
+		result = val[i][j - i];
 	}
-	else
-	{
-		return arr[i][j - i];
-	}
+
+	return result;
 }
 
-MyType& TUpperTriangularMatrix::Get(int i, int j)
+MyType& TUpperTriangularMatrix::operator()(const int i, const int j)
 {
 	if (!IsInTriangle(i, j))
 	{
-		throw std::exception("MyType& TUpperTriangularMatrix::Get(int i, int j) failure: indices not in the triangle.");
+		throw std::exception("MyType& TUpperTriangularMatrix::operator()(const int i, const int j) failure: indices not in the triangle.");
 	}
 	else
 	{
-		return arr[i][j - i];
+		return val[i][j - i];
 	}
 }
 
@@ -49,7 +48,7 @@ TUpperTriangularMatrix TUpperTriangularMatrix::operator*(const double scalar) co
 		{
 			for (int j = 0; j < result.GetSizeColumns(); j++)
 			{
-				result.Get(i, j) *= scalar;
+				result(i, j) *= scalar;
 			}
 		}
 	}
@@ -66,9 +65,9 @@ TMatrix TUpperTriangularMatrix::operator*(const TMatrix& matrix)
 	unsigned int size_lines_2 = matrix.GetSizeLines();
 	unsigned int size_columns_2 = matrix.GetSizeColumns();
 
-	TMatrix result(size_lines, size_columns_2);
+	TMatrix result(size, size_columns_2);
 
-	if (size_columns != size_lines_2)
+	if (this->GetSizeColumns() != size_lines_2)
 	{
 		throw std::exception("TMatrix operator*(const TMatrix& matrix) failure. Size mismatch");
 	}
@@ -77,11 +76,11 @@ TMatrix TUpperTriangularMatrix::operator*(const TMatrix& matrix)
 	{
 		for (int i = 0; i < size_columns_2; i++)
 		{
-			for (int j = 0; j < size_lines; j++)
+			for (int j = 0; j < size; j++)
 			{
-				for (int k = 0; k < size_columns; k++)
+				for (int k = 0; k < this->GetSizeColumns(); k++)
 				{
-					result[i][j] += this->Get(i, k) * matrix[k][j];
+					result[i][j] += this->operator()(i, j) * matrix[k][j];
 				}
 			}
 		}
@@ -96,22 +95,22 @@ TMatrix TUpperTriangularMatrix::operator*(const TMatrix& matrix)
 
 TUpperTriangularMatrix TUpperTriangularMatrix::operator*(const TUpperTriangularMatrix& matrix)
 {
-	TUpperTriangularMatrix result(size_lines);
+	TUpperTriangularMatrix result(size);
 
-	if (size_columns != matrix.size_lines)
+	if (this->GetSizeColumns() != matrix.size)
 	{
 		throw std::exception("TMatrix operator*(const TMatrix& matrix) failure. Size mismatch");
 	}
 
 	try
 	{
-		for (int i = 0; i < result.size_columns; i++)
+		for (int i = 0; i < result.GetSizeColumns(); i++)
 		{
-			for (int j = 0; j < result.size_lines; j++)
+			for (int j = 0; j < result.size; j++)
 			{
-				for (int k = 0; k < size_columns; k++)
+				for (int k = 0; k < this->GetSizeColumns(); k++)
 				{
-					result.Get(i, j) += this->Get(i, k) * matrix.Get(k, j);
+					result(i, j) += this->operator()(i, k) * matrix(k, j);
 				}
 			}
 		}
@@ -129,22 +128,22 @@ TMatrix operator*(const TMatrix& matrix, const TUpperTriangularMatrix& UTmatrix)
 	unsigned int size_lines_1 = matrix.GetSizeLines();
 	unsigned int size_columns_1 = matrix.GetSizeColumns();
 
-	TMatrix result(size_lines_1, UTmatrix.size_columns);
+	TMatrix result(size_lines_1, UTmatrix.GetSizeColumns());
 
-	if (size_columns_1 != UTmatrix.size_lines)
+	if (size_columns_1 != UTmatrix.size)
 	{
 		throw std::exception("TMatrix operator*(const TMatrix& matrix) failure. Size mismatch");
 	}
 
 	try
 	{
-		for (int i = 0; i < UTmatrix.size_columns; i++)
+		for (int i = 0; i < UTmatrix.GetSizeColumns(); i++)
 		{
 			for (int j = 0; j < size_lines_1; j++)
 			{
 				for (int k = 0; k < size_columns_1; k++)
 				{
-					result[i][j] += matrix[i][k] * UTmatrix.Get(k, j);
+					result[i][j] += matrix[i][k] * UTmatrix(k, j);
 				}
 			}
 		}
@@ -159,13 +158,13 @@ TMatrix operator*(const TMatrix& matrix, const TUpperTriangularMatrix& UTmatrix)
 
 std::ostream& operator<<(std::ostream& os, const TUpperTriangularMatrix& matrix)
 {
-	for (int i = 0; i < matrix.size_lines; i++)
+	for (int i = 0; i < matrix.size; i++)
 	{
-		for (int j = 0; j < matrix.size_columns; j++)
+		for (int j = 0; j < matrix.GetSizeColumns(); j++)
 		{
 			try
 			{
-				os << matrix.Get(i, j);
+				os << matrix(i, j);
 			}
 			catch (...)
 			{
@@ -182,18 +181,18 @@ std::istream& operator>>(std::istream& os, TUpperTriangularMatrix& matrix)
 {
 	try
 	{
-		for (int i = 0; i < matrix.size_lines && os.good(); i++)
+		for (int i = 0; i < matrix.size && os.good(); i++)
 		{
-			for (int j = 0; j < matrix.size_columns; j++)
+			for (int j = 0; j < matrix.GetSizeColumns(); j++)
 			{
 				if (!matrix.IsInTriangle(i, j))
 				{
-					const TUpperTriangularMatrix temp_matrix(matrix);
-					std::cout <<  matrix.Get(i, j);
+					const TUpperTriangularMatrix temp(matrix);
+					std::cout << temp(i, j);
 				}
 				else
 				{
-					os >> matrix.Get(i, j);
+					os >> matrix(i, j);
 				}
 			}
 

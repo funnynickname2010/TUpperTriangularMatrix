@@ -128,7 +128,7 @@ int main()
 		std::cout << ex.what() << std::endl;
 	}
 
-	std::cout << "Get(i, j)" << std::endl;
+	std::cout << "operator()(i, j)" << std::endl;
 	try
 	{
 		unsigned int temp_lines_index1, temp_columns_index1;
@@ -137,7 +137,7 @@ int main()
 		std::cout << "Input columns index for matrix_1: ";
 		std::cin >> temp_columns_index1;
 
-		std::cout << matrix1.Get(temp_lines_index1, temp_columns_index1) << std::endl;
+		std::cout << matrix1(temp_lines_index1, temp_columns_index1) << std::endl;
 		/*
 		std::cout << "Input lines index for matrix_2: ";
 		std::cin >> temp_lines_index2;

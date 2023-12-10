@@ -10,6 +10,8 @@
 template <class T>
 class TVector
 {
+protected:
+
 	int size;
 	T* val;
 
@@ -45,7 +47,7 @@ public:
 	void SetSize(unsigned int new_size);
 	void SetVal(unsigned int index, const T);
 
-	int GetSize();
+	const int GetSize() const noexcept;
 
 	friend std::ostream& operator <<(std::ostream& os, const TVector<T>& vec)
 	{
@@ -168,7 +170,7 @@ public:
 #include "TVector.h"
 
 template <class T>
-int TVector<T>::GetSize()
+const int TVector<T>::GetSize() const noexcept
 {
 	return size;
 }
