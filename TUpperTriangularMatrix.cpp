@@ -39,6 +39,28 @@ MyType& TUpperTriangularMatrix::Get(int i, int j)
 	}
 }
 
+TUpperTriangularMatrix TUpperTriangularMatrix::operator*(const double scalar) const
+{
+	TUpperTriangularMatrix result(*this);
+
+	try
+	{
+		for (int i = 0; i < result.GetSizeLines(); i++)
+		{
+			for (int j = 0; j < result.GetSizeColumns(); j++)
+			{
+				result.Get(i, j) *= scalar;
+			}
+		}
+	}
+	catch (...)
+	{
+		throw std::exception("TUpperTriangularMatrix::operator*(const double scalar) const failure.");
+	}
+
+	return result;
+}
+
 TMatrix TUpperTriangularMatrix::operator*(const TMatrix& matrix)
 {
 	unsigned int size_lines_2 = matrix.GetSizeLines();
@@ -143,13 +165,14 @@ std::ostream& operator<<(std::ostream& os, const TUpperTriangularMatrix& matrix)
 		{
 			try
 			{
-				os << matrix.Get(i, j) << std::endl;
+				os << matrix.Get(i, j);
 			}
 			catch (...)
 			{
 				throw std::exception("TMatrix std::ostream& operator<< failure.");
 			}
 		}
+		os << std::endl;
 	}
 
 	return os;
@@ -165,17 +188,22 @@ std::istream& operator>>(std::istream& os, TUpperTriangularMatrix& matrix)
 			{
 				if (!matrix.IsInTriangle(i, j))
 				{
-					std::cout << matrix.Get(i, j);
+					const TUpperTriangularMatrix temp_matrix(matrix);
+					std::cout <<  matrix.Get(i, j);
 				}
 				else
 				{
 					os >> matrix.Get(i, j);
 				}
 			}
+
+			//std::cout << std::endl;
 		}
 	}
-	catch (...)
+	catch (std::exception& e)
 	{
+		std::cout << e.what() << std::endl;
+
 		throw std::exception("TMatrix std::istream& operator>> failure.");
 	}
 

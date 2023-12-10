@@ -11,11 +11,9 @@ public:
 	const MyType Get(int i, int j) const;
 	MyType& Get(int i, int j);
 
+	TUpperTriangularMatrix operator *(const double scalar) const;
 	TMatrix operator *(const TMatrix& matrix);
 	TUpperTriangularMatrix operator *(const TUpperTriangularMatrix& matrix);
-
-	// friend void operator*(TUpperTriangularMatrix& UTmatrix); //К полям какого класса такая функция получает доступ?
-
 	friend TMatrix operator*(const TMatrix& matrix, const TUpperTriangularMatrix& UTmatrix);
 
 	friend std::ostream& operator <<(std::ostream& os, const TUpperTriangularMatrix& matrix);
