@@ -14,6 +14,20 @@ TUpperTriangularMatrix::TUpperTriangularMatrix(const unsigned int n) : TMatrix(n
 	}
 }
 
+TUpperTriangularMatrix::TUpperTriangularMatrix(const TVector<TVector<MyType>>& vector) : TMatrix(vector.GetSize()) 
+{
+	for (int i = 0; i < this->GetSize(); i++)
+	{
+		for (int j = 0; j < this->GetSize(); j++)
+		{
+			if (IsInTriangle(i, j))
+			{
+				this->val[i][j - i] = vector[i][j - i];
+			}
+		}
+	}
+}
+
 const MyType TUpperTriangularMatrix::operator()(const int i, const int j) const
 {
 	MyType result = 0;
@@ -36,6 +50,17 @@ MyType& TUpperTriangularMatrix::operator()(const int i, const int j)
 	{
 		return val[i][j - i];
 	}
+}
+
+TUpperTriangularMatrix TUpperTriangularMatrix::operator+(const TUpperTriangularMatrix& matrix)
+{
+	TUpperTriangularMatrix result(TVector<TVector<MyType>>::operator+(matrix));
+	return result;
+}
+
+TUpperTriangularMatrix TUpperTriangularMatrix::operator-(const TUpperTriangularMatrix& matrix)
+{
+	return TUpperTriangularMatrix(TVector<TVector<MyType>>::operator-(matrix));
 }
 
 TUpperTriangularMatrix TUpperTriangularMatrix::operator*(const double scalar) const
@@ -123,6 +148,16 @@ TUpperTriangularMatrix TUpperTriangularMatrix::operator*(const TUpperTriangularM
 	return result;
 }
 
+TUpperTriangularMatrix TUpperTriangularMatrix::operator*(const double scalar)
+{
+	return TUpperTriangularMatrix(TVector<TVector<MyType>>::operator*(scalar));
+}
+
+TUpperTriangularMatrix TUpperTriangularMatrix::operator/(const double scalar)
+{
+	return TUpperTriangularMatrix(TVector<TVector<MyType>>::operator/(scalar));
+}
+
 TMatrix operator*(const TMatrix& matrix, const TUpperTriangularMatrix& UTmatrix)
 {
 	unsigned int size_lines_1 = matrix.GetSizeLines();
@@ -164,7 +199,7 @@ std::ostream& operator<<(std::ostream& os, const TUpperTriangularMatrix& matrix)
 		{
 			try
 			{
-				os << matrix(i, j);
+				os << matrix(i, j) << " ";
 			}
 			catch (...)
 			{
@@ -188,7 +223,7 @@ std::istream& operator>>(std::istream& os, TUpperTriangularMatrix& matrix)
 				if (!matrix.IsInTriangle(i, j))
 				{
 					const TUpperTriangularMatrix temp(matrix);
-					std::cout << temp(i, j);
+					std::cout << temp(i, j) << " ";
 				}
 				else
 				{
