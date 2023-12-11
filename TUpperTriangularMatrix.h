@@ -7,11 +7,18 @@ public:
 
 	bool IsInTriangle(int i, int j) const;
 	explicit TUpperTriangularMatrix(const unsigned int n);
+	explicit TUpperTriangularMatrix(const TVector<TVector<MyType>>& vector);
 
 	friend MyType& TVector<MyType>::operator [](const int index);
 
 	const MyType operator()(const int i, const int j) const;
 	MyType& operator()(const int i, const int j);
+
+	TUpperTriangularMatrix operator +(const TUpperTriangularMatrix& matrix);
+	TUpperTriangularMatrix operator -(const TUpperTriangularMatrix& matrix);
+	TUpperTriangularMatrix operator *(TUpperTriangularMatrix& matrix);
+	TUpperTriangularMatrix operator *(const double scalar);
+	TUpperTriangularMatrix operator /(const double scalar);
 
 	TUpperTriangularMatrix operator *(const double scalar) const;
 	TMatrix operator *(const TMatrix& matrix);
