@@ -43,11 +43,14 @@ int main()
 		std::cout << e.what();
 	}
 
+	std::cout << '\n' << matrix1 << '\n';
 
 	std::cout << "+" << std::endl;
 	try
 	{
+		TUpperTriangularMatrix matrix_temp = (matrix1 + matrix2);
 		std::cout << matrix1 + matrix2 << std::endl;
+		std::cout << matrix_temp << std::endl;
 	}
 	catch (const std::exception& ex)
 	{
@@ -67,7 +70,7 @@ int main()
 	std::cout << "*" << std::endl;
 	try
 	{
-		std::cout << matrix1 * matrix2 << std::endl;
+	//	std::cout << matrix1 * matrix2 << std::endl;
 	}
 	catch (const std::exception& ex)
 	{
@@ -102,6 +105,7 @@ int main()
 		std::cout << ex.what() << std::endl;
 	}
 
+	/*
 	std::cout << "+=" << std::endl;
 	try
 	{
@@ -126,8 +130,8 @@ int main()
 	catch (const std::exception& ex)
 	{
 		std::cout << ex.what() << std::endl;
-	}
-
+	}*/
+	;
 	std::cout << "operator()(i, j)" << std::endl;
 	try
 	{
